@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Interview Portal</title>
+
+    <!-- Connect CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <header>
+        <h1>Smart Interview Portal</h1>
+
+
+        <nav>
+
+            <a href="/">Home</a>
+
+            {% if logged_in %}
+
+                <a href="/dashboard">Dashboard</a>
+                <a href="/logout">Logout</a>
+
+            {% else %}
+
+                <a href="/register">Register</a>
+                <a href="/login">Login</a>
+
+            {% endif %}
+
+        </nav>
+    
+    </header>
+
+    <section class="hero">
+        <h2>Welcome to Smart Interview Portal</h2>
+
+        <p>
+            Prepare for Python, SQL, Aptitude and Coding Interviews.
+        </p>
+
+        {% if logged_in %}
+
+        <a href="/dashboard">
+            <button>Start Learning</button>
+        </a>
+
+    {% else %}
+
+        <a href="/login">
+            <button>Start Learning</button>
+        </a>
+
+    {% endif %}
+    </section>
+
+</body>
+</html>

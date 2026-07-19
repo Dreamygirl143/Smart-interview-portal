@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ATS Resume Report</title>
+
+<style>
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f4f6fb;
+    margin:0;
+}
+
+.container{
+    width:80%;
+    margin:30px auto;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    margin:20px 0;
+    border-radius:10px;
+    box-shadow:0px 5px 15px rgba(0,0,0,0.15);
+}
+
+h1,h2,h3{
+    color:#2563eb;
+}
+
+.score{
+    font-size:38px;
+    color:green;
+    text-align:center;
+    font-weight:bold;
+}
+
+ul{
+    list-style:none;
+    padding:0;
+}
+
+li{
+    background:#eef4ff;
+    padding:12px;
+    margin:8px 0;
+    border-radius:8px;
+}
+
+.button-group{
+    text-align:center;
+    margin-top:40px;
+}
+
+.btn{
+    display:inline-block;
+    background:#2563eb;
+    color:white;
+    text-decoration:none;
+    padding:14px 25px;
+    margin:10px;
+    border-radius:8px;
+    font-size:18px;
+    transition:.3s;
+}
+
+.btn:hover{
+    background:#1d4ed8;
+}
+
+.interview-btn{
+    background:#16a34a;
+}
+
+.interview-btn:hover{
+    background:#15803d;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1 align="center">📄 ATS Resume Analysis Report</h1>
+
+<div class="card">
+
+<h2>🎯 ATS Score</h2>
+
+<div class="score">
+{{ ats_score }}%
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>🤖 AI Similarity Score</h2>
+
+<div class="score">
+{{ score }}%
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>✅ Matched Skills</h2>
+
+<ul>
+
+{% for skill in skills %}
+<li>✅ {{ skill }}</li>
+{% else %}
+<li>No matched skills found.</li>
+{% endfor %}
+
+</ul>
+
+</div>
+
+<div class="card">
+
+<h2>❌ Missing Skills</h2>
+
+<ul>
+
+{% for skill in missing_skills %}
+<li>❌ {{ skill }}</li>
+{% else %}
+<li>No missing skills.</li>
+{% endfor %}
+
+</ul>
+
+</div>
+
+<div class="card">
+
+<h2>🧠 Skill Gap Analysis</h2>
+
+<h3>✅ Skills You Have</h3>
+
+<ul>
+
+{% for skill in skill_match %}
+<li>✅ {{ skill }}</li>
+{% else %}
+<li>No matching skills found.</li>
+{% endfor %}
+
+</ul>
+
+<h3>📚 Skills You Should Learn</h3>
+
+<ul>
+
+{% for skill in skill_missing %}
+<li>❌ {{ skill }}</li>
+{% else %}
+<li>No skill gap detected.</li>
+{% endfor %}
+
+</ul>
+
+</div>
+
+<div class="card">
+
+<h2>💡 AI Suggestions</h2>
+
+{% if ats_score >= 80 %}
+
+<p>
+✅ Excellent! Your resume is highly compatible with this job description.
+</p>
+
+<p>
+You are ready to attempt the AI Interview.
+</p>
+
+{% elif ats_score >= 50 %}
+
+<p>
+👍 Good Resume.
+</p>
+
+<p>
+Add the missing skills and improve your projects before applying.
+</p>
+
+{% else %}
+
+<p>
+⚠ Your resume needs improvement.
+</p>
+
+<p>
+Customize your resume according to the job description and include more relevant technical skills.
+</p>
+
+{% endif %}
+
+</div>
+
+<div class="button-group">
+
+<a href="/resume_matcher" class="btn">
+📄 Analyze Another Resume
+</a>
+
+<a href="/dashboard" class="btn">
+🏠 Dashboard
+</a>
+
+<a href="/start_interview" class="btn interview-btn">
+🚀 Attempt AI Interview
+</a>
+
+</div>
+
+</div>
+
+</body>
+
+</html>

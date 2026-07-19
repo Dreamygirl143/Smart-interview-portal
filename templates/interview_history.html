@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<title>Interview History</title>
+
+</head>
+
+
+<body>
+
+
+<h1>📊 Previous AI Interviews</h1>
+
+
+<table border="1" cellpadding="10">
+
+
+<tr>
+
+<th>Role</th>
+<th>Score</th>
+<th>Feedback</th>
+<th>Date</th>
+
+</tr>
+
+
+{% for i in interviews %}
+
+<tr>
+
+<td>{{i[0]}}</td>
+
+<td>{{i[1]}}%</td>
+
+<td>{{i[2]}}</td>
+
+<td>{{i[3]}}</td>
+
+</tr>
+
+
+{% endfor %}
+
+
+</table>
+
+
+</body>
+
+</html>

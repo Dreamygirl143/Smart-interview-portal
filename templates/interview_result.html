@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AI Interview Report</title>
+
+<style>
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f4f6fb;
+    margin:0;
+}
+
+.container{
+    width:80%;
+    margin:40px auto;
+    background:white;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0px 5px 15px rgba(0,0,0,0.15);
+}
+
+h1{
+    text-align:center;
+    color:#2563eb;
+}
+
+.score{
+    font-size:45px;
+    color:green;
+    text-align:center;
+    font-weight:bold;
+}
+
+.card{
+    margin-top:25px;
+    padding:20px;
+    border-radius:10px;
+    background:#eef4ff;
+}
+
+.question{
+    color:#2563eb;
+    font-size:20px;
+    font-weight:bold;
+}
+
+.answer{
+    background:white;
+    padding:12px;
+    border-radius:8px;
+    margin-top:8px;
+}
+
+.feedback{
+    background:#e8f5e9;
+    padding:12px;
+    border-left:5px solid green;
+    border-radius:8px;
+    margin-top:10px;
+}
+
+.buttons{
+    text-align:center;
+    margin-top:30px;
+}
+
+.btn{
+    display:inline-block;
+    text-decoration:none;
+    background:#2563eb;
+    color:white;
+    padding:12px 20px;
+    margin:10px;
+    border-radius:8px;
+}
+
+.btn:hover{
+    background:#1d4ed8;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🤖 AI Interview Report</h1>
+
+<h2 align="center">Overall Interview Score</h2>
+
+<div class="score">
+{{ score }}%
+</div>
+
+<h2>Overall Feedback</h2>
+
+<p>{{ feedback }}</p>
+
+<hr>
+
+<h2>Question-wise Analysis</h2>
+
+{% for item in analysis %}
+
+<div class="card">
+
+<div class="question">
+Question {{ item.number }}
+</div>
+
+<p><strong>Question:</strong></p>
+
+<p>{{ item.question }}</p>
+
+<p><strong>Your Answer:</strong></p>
+
+<div class="answer">
+{{ item.answer }}
+</div>
+
+<p><strong>AI Feedback:</strong></p>
+
+<div class="feedback">
+{{ item.feedback }}
+</div>
+
+</div>
+
+{% endfor %}
+
+<div class="buttons">
+
+<a href="/dashboard" class="btn">
+🏠 Dashboard
+</a>
+
+<a href="/interview_history" class="btn">
+📊 Interview History
+</a>
+
+<a href="/resume_matcher" class="btn">
+🚀 Try Another Interview
+</a>
+
+</div>
+
+</div>
+
+</body>
+
+</html>
