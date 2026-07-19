@@ -616,50 +616,18 @@ def python_quiz():
     if "user" not in session:
         return redirect("/login")
 
-    prompt = """
-Generate exactly 10 Python interview questions.
+    cursor = connection.cursor()
 
-Include:
-- Python concepts
-- Output prediction questions
-- Debugging questions
-- Coding logic questions
+    cursor.execute("SELECT * FROM python_questions")
 
-Return ONLY JSON.
+    questions = cursor.fetchall()
 
-Format:
+    cursor.close()
 
-[
- {
- "question":"Question",
- "options":["A","B","C","D"],
- "answer":"A"
- }
-]
-"""
-
-    ai_response = ask_ai(prompt)
-
-    try:
-        import json
-
-        questions = json.loads(ai_response)
-
-        session["python_questions"] = questions
-
-        return render_template(
-            "python.html",
-            questions=questions
-        )
-
-    except Exception as e:
-
-        print("PYTHON QUIZ ERROR:", e)
-
-        flash("Python quiz generation failed")
-
-        return redirect("/dashboard")
-    
+    return render_template(
+        "python.html",
+        questions=questions
+    )
     
 @app.route("/sql")
 def sql():
@@ -723,23 +691,52 @@ def submit_python():
     if "user" not in session:
         return redirect("/login")
 
-    questions = session.get("python_questions", [])
+    cursor = connection.cursor()
+
+    cursor.execute("SELECT * FROM python_questions")
+
+    questions = cursor.fetchall()
 
     score = 0
 
-    for index, question in enumerate(questions):
+    for q in questions:
 
-        user_answer = request.form.get(f"q{index}")
+        qid = str(q[0])
 
-        if user_answer == question["answer"]:
+        correct_answer = q[6]
+
+        user_answer = request.form.get(qid)
+
+        if user_answer == correct_answer:
+
             score += 1
+
+    cursor.execute(
+        """
+        INSERT INTO results
+        (email, subject, score, total)
+        VALUES (%s, %s, %s, %s)
+        """,
+
+        (
+            session["user"],
+            "Python",
+            score,
+            len(questions)
+        )
+    )
+
+    connection.commit()
+
+    cursor.close()
 
     return render_template(
         "result.html",
+
         score=score,
+
         total=len(questions)
     )
-    
     
 @app.route("/submit_sql", methods=["POST"])
 def submit_sql():
