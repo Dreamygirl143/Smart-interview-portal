@@ -1,4 +1,7 @@
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 HOST = os.getenv("MYSQLHOST")
 PORT = int(os.getenv("MYSQLPORT", 3306))
