@@ -1,7 +1,5 @@
-import os
-
-HOST = os.getenv("MYSQLHOST")
-PORT = int(os.getenv("MYSQLPORT", 3306))
-USER = os.getenv("MYSQLUSER")
-PASSWORD = os.getenv("MYSQLPASSWORD")
-DATABASE = os.getenv("MYSQLDATABASE")
+HOST = "localhost"
+PORT = 3306
+USER = "yeshu"
+PASSWORD = "Yeshu@05"
+DATABASE = "smart_interview_portal"
