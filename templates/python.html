@@ -2,17 +2,12 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Python Quiz</title>
 
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='css/style.css') }}">
-
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body>
@@ -22,31 +17,19 @@
     <h1>Python Quiz</h1>
 
     <nav>
-
-        <a href="/dashboard">
-            Dashboard
-        </a>
-
-        <a href="/logout">
-            Logout
-        </a>
-
+        <a href="/dashboard">Dashboard</a>
+        <a href="/logout">Logout</a>
     </nav>
 
 </header>
 
-
 <div class="container">
 
-    <h2>Python Quiz</h2>
+    <h2>🐍 Python Quiz</h2>
 
-
-    <form action="/submit_python"
-          method="POST">
-
+    <form action="/submit_python" method="POST">
 
         {% for q in questions %}
-
 
         <div class="question">
 
@@ -54,66 +37,54 @@
                 Q{{ loop.index }}. {{ q[1] }}
             </h3>
 
-
             <label class="quiz-option">
-
-                <input type="radio"
-                       name="{{ q[0] }}"
-                       value="{{ q[2] }}"
-                       required>
-
+                <input
+                    type="radio"
+                    name="q{{ q[0] }}"
+                    value="{{ q[2] }}"
+                    required>
                 {{ q[2] }}
-
             </label>
 
+            <br>
 
             <label class="quiz-option">
-
-                <input type="radio"
-                       name="{{ q[0] }}"
-                       value="{{ q[3] }}">
-
+                <input
+                    type="radio"
+                    name="q{{ q[0] }}"
+                    value="{{ q[3] }}">
                 {{ q[3] }}
-
             </label>
 
+            <br>
 
             <label class="quiz-option">
-
-                <input type="radio"
-                       name="{{ q[0] }}"
-                       value="{{ q[4] }}">
-
+                <input
+                    type="radio"
+                    name="q{{ q[0] }}"
+                    value="{{ q[4] }}">
                 {{ q[4] }}
-
             </label>
 
+            <br>
 
             <label class="quiz-option">
-
-                <input type="radio"
-                       name="{{ q[0] }}"
-                       value="{{ q[5] }}">
-
+                <input
+                    type="radio"
+                    name="q{{ q[0] }}"
+                    value="{{ q[5] }}">
                 {{ q[5] }}
-
             </label>
-
 
             <hr>
 
         </div>
 
-
         {% endfor %}
 
-
         <button type="submit">
-
             Submit Quiz
-
         </button>
-
 
     </form>
 
