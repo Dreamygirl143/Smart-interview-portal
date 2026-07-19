@@ -3,10 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Python Quiz</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
 </head>
+
 <body>
 
 <header>
@@ -20,43 +23,44 @@
 
 <div class="container">
 
-    <h2>Python MCQ Test</h2>
+    <h2>AI Python Quiz</h2>
 
     <form action="/submit_python" method="POST">
 
         {% for q in questions %}
 
-            <div class="question">
+        <div class="question">
 
-                <h3>Q{{ loop.index }}. {{ q[1] }}</h3>
+            <h3>
+                Q{{ loop.index }}. {{ q.question }}
+            </h3>
 
-                <label class="quiz-option">
-                    <input type="radio" name="{{ q[0] }}" value="{{ q[2] }}" required>
-                    {{ q[2] }}
-                </label>
+            {% for option in q.options %}
 
-                <label class="quiz-option">
-                    <input type="radio" name="{{ q[0] }}" value="{{ q[3] }}">
-                    {{ q[3] }}
-                </label>
+            <label class="quiz-option">
 
-                <label class="quiz-option">
-                    <input type="radio" name="{{ q[0] }}" value="{{ q[4] }}">
-                    {{ q[4] }}
-                </label>
+                <input
+                    type="radio"
+                    name="q{{ loop.index0 }}"
+                    value="{{ option }}"
+                    required
+                >
 
-                <label class="quiz-option">
-                    <input type="radio" name="{{ q[0] }}" value="{{ q[5] }}">
-                    {{ q[5] }}
-                </label>
+                {{ option }}
 
-                <hr>
+            </label>
 
-            </div>
+            {% endfor %}
+
+            <hr>
+
+        </div>
 
         {% endfor %}
 
-        <button type="submit">Submit Quiz</button>
+        <button type="submit">
+            Submit Quiz
+        </button>
 
     </form>
 

@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import PyPDF2
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-import ollama
+import requests
 
 app = Flask(__name__)
 app.secret_key = "smart_interview_secret"
@@ -39,44 +39,49 @@ def extract_text(file):
 
 def ask_ai(prompt):
 
-    print("=== Calling Ollama ===")
+    import os
+    import requests
+
+    api_key = os.environ.get("GEMINI_API_KEY")
+
+    if not api_key:
+        print("GEMINI_API_KEY is missing")
+        return ""
+
+    url = (
+        "https://generativelanguage.googleapis.com/v1beta/models/"
+        "gemini-2.0-flash:generateContent?key=" + api_key
+    )
+
+    data = {
+        "contents": [
+            {
+                "parts": [
+                    {
+                        "text": prompt
+                    }
+                ]
+            }
+        ]
+    }
 
     try:
 
-        response = ollama.chat(
-            model="llama3.2:1b",
-            messages=[
-                {
-                    "role": "user",
-                    "content": prompt
-                }
-            ],
-            options={
-                "num_predict": 400,
-                "temperature": 0.2
-            }
+        response = requests.post(
+            url,
+            json=data,
+            timeout=60
         )
 
-        print("=== Ollama Response Received ===")
+        result = response.json()
 
-        return response["message"]["content"]
+        return result["candidates"][0]["content"]["parts"][0]["text"]
 
     except Exception as e:
 
-        print("OLLAMA ERROR:", e)
+        print("GEMINI ERROR:", e)
 
-        return (
-            "Tell me about yourself?\n"
-            "What are your strengths?\n"
-            "How do you solve problems?\n"
-            "How do you work in a team?\n"
-            "What are your career goals?\n"
-            "What is Python?\n"
-            "What is Flask?\n"
-            "What is SQL?\n"
-            "What is MySQL?\n"
-            "What is a REST API?"
-        )
+        return ""
         
 def evaluate_answer_ai(question, answer):
 
@@ -611,19 +616,51 @@ def python_quiz():
     if "user" not in session:
         return redirect("/login")
 
-    cursor = connection.cursor()
+    prompt = """
+Generate exactly 10 Python interview questions.
 
-    cursor.execute("SELECT * FROM python_questions")
+Include:
+- Python concepts
+- Output prediction questions
+- Debugging questions
+- Coding logic questions
 
-    questions = cursor.fetchall()
+Return ONLY JSON.
 
-    cursor.close()
+Format:
 
-    return render_template(
-        "python.html",
-        questions=questions
-    )
+[
+ {
+ "question":"Question",
+ "options":["A","B","C","D"],
+ "answer":"A"
+ }
+]
+"""
 
+    ai_response = ask_ai(prompt)
+
+    try:
+        import json
+
+        questions = json.loads(ai_response)
+
+        session["python_questions"] = questions
+
+        return render_template(
+            "python.html",
+            questions=questions
+        )
+
+    except Exception as e:
+
+        print("PYTHON QUIZ ERROR:", e)
+
+        flash("Python quiz generation failed")
+
+        return redirect("/dashboard")
+    
+    
 @app.route("/sql")
 def sql():
 
@@ -686,38 +723,24 @@ def submit_python():
     if "user" not in session:
         return redirect("/login")
 
-    cursor = connection.cursor()
-
-    cursor.execute("SELECT * FROM python_questions")
-    questions = cursor.fetchall()
+    questions = session.get("python_questions", [])
 
     score = 0
 
-    for q in questions:
-        question_id = str(q[0])
-        correct_answer = q[6]
-        user_answer = request.form.get(question_id)
+    for index, question in enumerate(questions):
 
-        if user_answer == correct_answer:
+        user_answer = request.form.get(f"q{index}")
+
+        if user_answer == question["answer"]:
             score += 1
-
-    cursor.execute(
-        """
-        INSERT INTO results (email, subject, score, total)
-        VALUES (%s, %s, %s, %s)
-        """,
-        (session["user"], "Python", score, len(questions))
-    )
-
-    connection.commit()
-    cursor.close()
 
     return render_template(
         "result.html",
         score=score,
         total=len(questions)
     )
-
+    
+    
 @app.route("/submit_sql", methods=["POST"])
 def submit_sql():
 
