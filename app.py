@@ -44,7 +44,7 @@ def ask_ai(prompt):
     try:
 
         response = ollama.chat(
-            model="llama3:latest",
+            model="llama3.2:1b",
             messages=[
                 {
                     "role": "user",
@@ -52,8 +52,8 @@ def ask_ai(prompt):
                 }
             ],
             options={
-                "num_predict": 200,
-                "temperature": 0.3
+                "num_predict": 400,
+                "temperature": 0.2
             }
         )
 
@@ -66,9 +66,16 @@ def ask_ai(prompt):
         print("OLLAMA ERROR:", e)
 
         return (
-            "Tell me about yourself.\n"
-            "Explain your technical skills.\n"
-            "Describe your project experience."
+            "Tell me about yourself?\n"
+            "What are your strengths?\n"
+            "How do you solve problems?\n"
+            "How do you work in a team?\n"
+            "What are your career goals?\n"
+            "What is Python?\n"
+            "What is Flask?\n"
+            "What is SQL?\n"
+            "What is MySQL?\n"
+            "What is a REST API?"
         )
         
 def evaluate_answer_ai(question, answer):
@@ -233,7 +240,6 @@ def get_expected_answer(question):
         question,
         "Provide a clear explanation with examples and practical experience."
     )
-# ---------------- AI ANSWER EVALUATION ----------------
 
 # ---------------- AI ANSWER EVALUATION ----------------
 
@@ -350,7 +356,6 @@ def evaluate_answer(question, answer):
             )
 
     return score, " ".join(feedback)
-# ---------------- FINAL INTERVIEW EVALUATION ----------------
 
 # ---------------- FINAL INTERVIEW EVALUATION ----------------
 
@@ -946,34 +951,40 @@ def start_interview():
     session["job_description"] = job_description
 
     prompt = f"""
-    You are a professional AI interviewer.
+You are an interview question generator.
 
-    Generate exactly 10 interview questions based on the Job Description.
+Job Description:
+{job_description}
 
-    IMPORTANT RULES:
+Generate EXACTLY 10 interview questions.
 
-    NON-TECHNICAL QUESTIONS:
-    - Questions 1 to 5 must be simple HR questions.
-    - Ask questions about the candidate, teamwork, strengths, learning, goals, and problem-solving.
-    - Keep them easy and suitable for a fresher.
-    - Do not ask technical questions in questions 1 to 5.
+STRICT RULES:
 
-    TECHNICAL QUESTIONS:
-    - Questions 6 to 10 must be technical questions.
-    - Ask technical questions based on the skills and technologies mentioned in the Job Description.
-    - Questions should be suitable for a fresher or beginner.
-    - Do not ask extremely difficult questions.
+QUESTIONS 1 TO 5:
+These MUST be HR questions only.
 
-    GENERAL RULES:
-    - Return ONLY 10 questions.
-    - Do NOT write any introduction.
-    - Number questions from 1 to 10.
-    - Each question must be on a separate line.
-    - Every question must end with a question mark.
+Question 1: Ask about the candidate.
+Question 2: Ask about teamwork.
+Question 3: Ask about strengths or weaknesses.
+Question 4: Ask about learning or problem-solving.
+Question 5: Ask about career goals or motivation.
 
-    Job Description:
-    {job_description}
-    """
+QUESTIONS 6 TO 10:
+These MUST be technical questions.
+
+Use the technologies and skills mentioned in the Job Description.
+
+OUTPUT RULES:
+- Return exactly 10 questions.
+- Return ONLY the questions.
+- Number them from 1 to 10.
+- One question per line.
+- Every question must end with ?.
+- Do not write any introduction.
+- Do not write any explanation.
+
+Generate the 10 questions now.
+"""
 
     print("=== Calling AI ===")
 
@@ -981,6 +992,8 @@ def start_interview():
 
     print("=== Questions Generated ===")
     print(questions)
+
+    # ---------------- QUESTION PARSING ----------------
 
     question_list = []
 
@@ -991,29 +1004,68 @@ def start_interview():
         if not line:
             continue
 
-        # Remove common AI introduction text
         if line.lower().startswith("here are"):
             continue
 
-        if line.lower().startswith("here are 5"):
-            continue
-
         # Remove numbering
-        line = line.lstrip("1234567890.-) ")
+        parts = line.split(".", 1)
+
+        if len(parts) == 2 and parts[0].strip().isdigit():
+
+            line = parts[1].strip()
 
         # Keep only proper questions
-        if "?" in line:
-            question_list.append(line)
+        line = line.rstrip("?") + "?"
 
-    # Make sure only 5 questions are used
+        question_list.append(line)
+
+    # Keep only 10 questions
     question_list = question_list[:10]
 
+    # ---------------- FALLBACK QUESTIONS ----------------
+
+    fallback_questions = [
+
+        "Tell me about yourself?",
+
+        "How do you work in a team?",
+
+        "What are your strengths?",
+
+        "How do you learn new skills?",
+
+        "What are your career goals?",
+
+        "What is Python?",
+
+        "What is Flask?",
+
+        "What is SQL?",
+
+        "What is a REST API?",
+
+        "What is Git?"
+
+    ]
+
+    # Ensure exactly 10 questions
+    while len(question_list) < 10:
+
+        question_list.append(
+            fallback_questions[len(question_list)]
+        )
+
+    print("=== FINAL QUESTION COUNT ===")
+    print(len(question_list))
+
     session["interview_questions"] = question_list
+
     session["current_question"] = 0
+
     session["answers"] = []
 
     return redirect("/ask_question")
-   
+    
 @app.route("/ask_question")
 def ask_question():
 
