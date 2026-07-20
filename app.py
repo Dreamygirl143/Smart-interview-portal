@@ -685,6 +685,8 @@ def aptitude():
 
 # ---------------- SUBMIT QUIZ ----------------
 
+# ---------------- SUBMIT QUIZ ----------------
+
 @app.route("/submit_python", methods=["POST"])
 def submit_python():
 
